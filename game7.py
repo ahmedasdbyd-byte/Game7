@@ -1,24 +1,43 @@
-from Flask import flask, render_templete_string, request 
-‎
-‎app = Flask(__name__)
-‎
-‎# إعداد واجهة المستخدم - تم تحسين الكود ليعمل على كافة المتصفحات بدون أخطاء
-‎HTML_CONTENT = """
-‎<!DOCTYPE html>
-‎<html dir="rtl" lang="ar">
-‎<head>
-‎    <meta charset="UTF-8">
-‎    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-‎    <title>الطيارة الملكية</title>
-‎    <style>
-‎        body { font-family: sans-serif; background-color: #0b0e11; color: white; text-align: center; margin: 0; }
-‎        .top-bar { background: #1f2630; padding: 15px; color: #f0b90b; font-weight: bold; cursor: pointer; font-size: 20px; }
-‎        .main-card { background: #161a1e; margin: 20px auto; padding: 20px; border-radius: 12px; max-width: 450px; border: 1px solid #2b3139; }
-‎        .mult-text { font-size: 60px; color: #f0b90b; font-weight: bold; margin: 20px 0; }
-‎        .balance { background: #2b3139; padding: 8px 15px; border-radius: 5px; display: inline-block; margin-bottom: 15px; border: 1px solid #f0b90b; }
-‎        input { width: 85%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #474d57; background: #1e2329; color: white; }
-‎        .btn { width: 90%; padding: 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
-‎        .btn-play { background: #f0b90b; color: black; }
-‎        .btn-cash { background: #27ae60; color: white; display: none; }
-‎        .deposit-box { background: #161a1e; max-width: 450px; margin: 20px auto; padding: 20px; border-radius: 12px; border: 1px solid #27ae60; }
-‎        .secret-panel { display: none; background: #3
+from flask import Flask, render_template_string, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template_string('''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>لعبة تخمين الرقم</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; padding: 50px; }
+            h1 { color: #333; }
+            input { padding: 10px; font-size: 16px; }
+            button { padding: 10px 20px; font-size: 16px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        </style>
+    </head>
+    <body>
+        <h1>أهلاً بك في لعبة تخمين الرقم!</h1>
+        <p>حاول تخمين الرقم بين 1 و 10</p>
+        <form method="POST" action="/guess">
+            <input type="number" name="number" min="1" max="10" required>
+            <button type="submit">تخمين</button>
+        </form>
+    </body>
+    </html>
+    ''')
+
+@app.route('/guess', methods=['POST'])
+def guess():
+    user_guess = request.form.get('number')
+    correct_number = "7"  # الرقم الصحيح
+    if user_guess == correct_number:
+        message = "مبروك! التخمين صحيح 🎉"
+    else:
+        message = "للأسف، حاول مرة أخرى ❌"
+    
+    return f"<h1>{message}</h1><br><a href='/'>ارجع للعبة</a>"
+
+if __name__ == '__main__':
+    app.run(debug=True)
+  
